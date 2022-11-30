@@ -9,8 +9,6 @@ function [bodies] = step_lf(bodies, masses, dt, softening)
 %   softening: the distance below which gravity is supressed
 [~, N] = size(masses);
 
-bodies = get_accel(bodies, masses, softening);
-
 % Integrate each body according to the first two steps in leapfrog
 for i = 1:N
     bodies(i, 4:6) = bodies(i, 4:6) + bodies(i, 7:9) * dt / 2;
