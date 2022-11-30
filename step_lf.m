@@ -1,4 +1,4 @@
-function [bodies] = step_lf(bodies, masses, dt)
+function [bodies] = step_lf(bodies, masses, dt, softening)
 %STEP_LF Moves the simulation forward by a fixed step using leapfrog
 %integration. Leapfrog integration has error O(h^2), which is sufficient
 %to be used as part of rk4.
@@ -8,7 +8,6 @@ function [bodies] = step_lf(bodies, masses, dt)
 %   dt: the fixed timestep
 [~, N] = size(masses);
 G = 6.67430e-11;
-e = 1e4; % the distance under which gravitation force is supressed
 
 % Loop over each body, calculating acceleration before the first "kick"
 for i = 1:N
@@ -20,7 +19,7 @@ for i = 1:N
             % Add the force of gravity from body j
             bodies(i, 7:9) = bodies(i, 7:9) + ...
                 (G * masses(j) * (bodies(j, 1:3) - bodies(i, 1:3))) / ...
-                (norm((bodies(j, 1:3) - bodies(i, 1:3)), 2).^2 + e).^(3/2);
+                (norm((bodies(j, 1:3) - bodies(i, 1:3)), 2).^2 + softening^2).^(3/2);
         end
     end
 end
@@ -44,7 +43,7 @@ for i = 1:N
             % http://www.scholarpedia.org/article/N-body_simulations_(gravitational)#Introduction
             bodies(i, 7:9) = bodies(i, 7:9) + ...
                 (G * masses(j) * (bodies(j, 1:3) - bodies(i, 1:3))) / ...
-                (norm((bodies(j, 1:3) - bodies(i, 1:3)), 2).^2 + e).^(3/2);
+                (norm((bodies(j, 1:3) - bodies(i, 1:3)), 2).^2 + softening^2).^(3/2);
         end
     end
 end
