@@ -7,7 +7,7 @@ function [bodies] = step_lf(bodies, masses, dt, softening)
 %   masses: a 1 x N matrix, where each row holds the mass for that body
 %   dt: the fixed timestep
 %   softening: the distance below which gravity is supressed
-[~, N] = size(masses);
+[N, ~] = size(masses);
 
 % Integrate each body according to the first two steps in leapfrog
 for i = 1:N

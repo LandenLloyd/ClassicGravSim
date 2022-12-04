@@ -4,7 +4,7 @@ function [bodies] = get_accel(bodies, masses, softening)
 %   and acceleration for that body
 %   masses: an N x 1 matrix, where each row holds the mass for that body
 %   softening: the distance below which gravity is supressed
-[~, N] = size(masses);
+[N, ~] = size(masses);
 G = 6.67430e-11;
 
 a = zeros(N, 3);

@@ -24,9 +24,6 @@ bodies(:, 4:9) = 0;
 % to zero. This prevents the system from leaving the bounds of the graph.
 bodies(:, 4:6) = bodies(:, 4:6) - mean((masses*[1 1 1]) .* bodies(:, 4:6)) / mean(masses);
 
-% Temporary: the code expects masses to be 1 x N
-masses = masses';
-
 % Constants for integration
 t = 0;
 tEnd = 518400;
