@@ -1,7 +1,5 @@
 function [bodies] = get_accel(bodies, masses, softening)
-%STEP_LF Moves the simulation forward by a fixed step using leapfrog
-%integration. Leapfrog integration has error O(h^2), which is sufficient
-%to be used as part of rk4.
+%GET_ACCEL sets the acceleration in bodies by gravitational force.
 %   bodies: an N x 9 matrix, where each row holds the position, velocity,
 %   and acceleration for that body
 %   masses: an N x 1 matrix, where each row holds the mass for that body
