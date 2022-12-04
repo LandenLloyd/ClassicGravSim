@@ -9,10 +9,10 @@ function [bodies] = get_accel(bodies, masses, softening)
 [~, N] = size(masses);
 G = 6.67430e-11;
 
+bodies(:, 7:9) = 0;
+
 % Loop over each body, calculating acceleration before the first "kick"
 for i = 1:N
-    bodies(i, 7:9) = 0;
-
     % Loop over each other body to apply the force of gravity
     for j = 1:N
         if i ~= j
