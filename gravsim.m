@@ -1,12 +1,31 @@
 format long
 
-% Our initial conditions
-masses = [50 50 50 50];
-% Each row is in the form [xx, xy, xz, vx, vy, vz, ax, ay, az]
-bodies = [0.5 0 0 0 1e-6 0 0 0 0;
-    -0.5 0 0 0 -1e-6 0 0 0 0;
-    0 0.5 0 1e-6 0 0 0 0 0;
-    0 -0.5 0 -1e-6 0 0 0 0 0];
+% % Our initial conditions
+% masses = [50 50 50 50];
+% % Each row is in the form [xx, xy, xz, vx, vy, vz, ax, ay, az]
+% bodies = [0.5 0 0 0 1e-6 0 0 0 0;
+%     -0.5 0 0 0 -1e-6 0 0 0 0;
+%     0 0.5 0 1e-6 0 0 0 0 0;
+%     0 -0.5 0 -1e-6 0 0 0 0 0];
+
+% Our random generation scheme is inspired by this Author:
+% https://github.com/pmocz/nbody-matlab/blob/master/nbody.m
+N = 20;
+
+% Give each body 50 pounds of weightx
+masses = ones(N, 1) * 50;
+
+% Generate random positions and velocities
+bodies = rand(N, 9) * 2 - 1;
+bodies(:, 4:9) = 0;
+
+% vel = vel - mean((mass*[1 1 1]) .* vel) / mean(mass);
+% Convert the frame to "center of mass", meaning the net momentum resets
+% to zero. This prevents the system from leaving the bounds of the graph.
+bodies(:, 4:6) = bodies(:, 4:6) - mean((masses*[1 1 1]) .* bodies(:, 4:6)) / mean(masses);
+
+% Temporary: the code expects masses to be 1 x N
+masses = masses';
 
 % Constants for integration
 t = 0;

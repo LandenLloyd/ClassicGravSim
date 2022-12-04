@@ -7,7 +7,7 @@ function [bodies] = get_accel(bodies, masses, softening)
 [~, N] = size(masses);
 G = 6.67430e-11;
 
-bodies(:, 7:9) = 0;
+a = zeros(N, 3);
 
 % Loop over each body, calculating acceleration before the first "kick"
 for i = 1:N
@@ -15,12 +15,14 @@ for i = 1:N
     for j = 1:N
         if i ~= j
             % Add the force of gravity from body j
-            bodies(i, 7:9) = bodies(i, 7:9) + ...
+            a(i, :) = a(i, :) + ...
                 (G * masses(j) * (bodies(j, 1:3) - bodies(i, 1:3))) / ...
                 (norm((bodies(j, 1:3) - bodies(i, 1:3)), 2).^2 + softening^2).^(3/2);
         end
     end
 end
+
+bodies(:, 7:9) = a;
 
 end
 
