@@ -1,28 +1,22 @@
 format long
 
-% % Our initial conditions
-% masses = [50 50 50 50];
-% % Each row is in the form [xx, xy, xz, vx, vy, vz, ax, ay, az]
-% bodies = [0.5 0 0 0 1e-6 0 0 0 0;
-%     -0.5 0 0 0 -1e-6 0 0 0 0;
-%     0 0.5 0 1e-6 0 0 0 0 0;
-%     0 -0.5 0 -1e-6 0 0 0 0 0];
-
 % Our random generation scheme is inspired by this Author:
 % https://github.com/pmocz/nbody-matlab/blob/master/nbody.m
-N = 20;
+N = 10; % Number of bodies generated
 
-% Give each body 50 pounds of weightx
+% Give each body 50 pounds of weight
 masses = ones(N, 1) * 50;
 
 % Generate random positions and velocities
 bodies = rand(N, 9) * 2 - 1;
-bodies(:, 4:9) = 0;
+bodies(:, 7:9) = 0;
 
 % vel = vel - mean((mass*[1 1 1]) .* vel) / mean(mass);
 % Convert the frame to "center of mass", meaning the net momentum resets
 % to zero. This prevents the system from leaving the bounds of the graph.
 bodies(:, 4:6) = bodies(:, 4:6) - mean((masses*[1 1 1]) .* bodies(:, 4:6)) / mean(masses);
+% We scale the velocity down so that the bodies stay in the screen
+bodies(:, 4:6) = bodies(:, 4:6) * 2e-5;
 
 % Constants for integration
 t = 0;
@@ -34,11 +28,10 @@ num_iters = ceil((tEnd - t) / dt);
 % The solver being used
 solver = @(bodies, masses, dt, softening) step_lf(bodies, masses, dt, softening);
 
-% Create a plot that ranges from -1 to 1 on all axis.
+% Create a plot that ranges from -2 to 2 on all axes.
 h = plot3(bodies(:, 1), bodies(:, 2), bodies(:, 3), "o");
-hold on
-axis([-1 1 -1 1 -1 1])
-hold off
+axis([-1 1 -1 1 -1 1]);
+grid on
 bodies = get_accel(bodies, masses, softening); % Initial acceleration
 for i = 1:num_iters
     bodies = solver(bodies, masses, dt ,softening);
