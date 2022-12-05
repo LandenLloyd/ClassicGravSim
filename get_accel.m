@@ -15,9 +15,9 @@ for i = 1:N
     for j = 1:N
         if i ~= j
             % Add the force of gravity from body j
+            r = bodies(j, 1:3) - bodies(i, 1:3);
             a(i, :) = a(i, :) + ...
-                (G * masses(j) * (bodies(j, 1:3) - bodies(i, 1:3))) / ...
-                (norm((bodies(j, 1:3) - bodies(i, 1:3)), 2).^2 + softening^2).^(3/2);
+                (G * masses(j) * r) / (norm(r, 2).^2 + softening^2).^(3/2);
         end
     end
 end
