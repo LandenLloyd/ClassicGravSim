@@ -2,7 +2,7 @@ format long
 
 % Our random generation scheme is inspired by this Author:
 % https://github.com/pmocz/nbody-matlab/blob/master/nbody.m
-N = 10; % Number of bodies generated
+N = 2; % Number of bodies generated
 
 % Give each body 50 pounds of weight
 masses = ones(N, 1) * 50;
@@ -33,6 +33,7 @@ h = plot3(bodies(:, 1), bodies(:, 2), bodies(:, 3), "o");
 axis([-1 1 -1 1 -1 1]);
 grid on
 bodies = get_accel(bodies, masses, softening); % Initial acceleration
+bodies(:, 4:6) = bodies(:, 4:6) + bodies(:, 7:9) * dt / 2; % Initial velocity step
 for i = 1:num_iters
     bodies = solver(bodies, masses, dt ,softening);
     t = t + dt;
