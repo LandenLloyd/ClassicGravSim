@@ -10,7 +10,7 @@ history_size = 500; % Number of positions in the trails
 t = 0;
 tEnd = 518400;
 dt = 4;
-softening = 0.1;
+softening = 0.03;
 num_iters = ceil((tEnd - t) / dt);
 
 % Give each body 50 pounds of weight
