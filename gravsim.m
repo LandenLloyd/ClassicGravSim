@@ -2,7 +2,7 @@ format long
 
 % Our random generation scheme is inspired by this Author:
 % https://github.com/pmocz/nbody-matlab/blob/master/nbody.m
-N = 2; % Number of bodies generated
+N = 20; % Number of bodies generated
 
 % Give each body 50 pounds of weight
 masses = ones(N, 1) * 50;
@@ -21,17 +21,23 @@ bodies(:, 4:6) = bodies(:, 4:6) * 2e-5;
 % Constants for integration
 t = 0;
 tEnd = 518400;
-dt = 1;
+dt = 4;
 softening = 0.1;
 num_iters = ceil((tEnd - t) / dt);
 
 % The solver being used
 solver = @(bodies, masses, dt, softening) step_lf(bodies, masses, dt, softening);
 
-% Create a plot that ranges from -2 to 2 on all axes.
-h = plot3(bodies(:, 1), bodies(:, 2), bodies(:, 3), "o");
+% Create one plot for each body in the graph
+h = [];
+for i = 1:N
+    h = [h plot3(bodies(i, 1), bodies(i, 2), bodies(i, 3), "o")];
+    hold on
+end
+% h = plot3(bodies(:, 1), bodies(:, 2), bodies(:, 3), "o");
 axis([-1 1 -1 1 -1 1]);
 grid on
+
 bodies = get_accel(bodies, masses, softening); % Initial acceleration
 bodies(:, 4:6) = bodies(:, 4:6) + bodies(:, 7:9) * dt / 2; % Initial velocity step
 for i = 1:num_iters
@@ -39,9 +45,11 @@ for i = 1:num_iters
     t = t + dt;
 
     % Plot the motion of the planets
-    set(h, 'XData', bodies(:, 1));
-    set(h, 'YData', bodies(:, 2));
-    set(h, 'ZData', bodies(:, 3));
-
+    for j = 1:N
+        set(h(j), 'XData', bodies(j, 1));
+        set(h(j), 'YData', bodies(j, 2));
+        set(h(j), 'ZData', bodies(j, 3));
+    end
+    
     drawnow limitrate
 end
