@@ -2,10 +2,19 @@ format long
 
 % Our random generation scheme is inspired by this Author:
 % https://github.com/pmocz/nbody-matlab/blob/master/nbody.m
-N = 15; % Number of bodies generated
+N = 20; % Number of bodies generated
+m = 50; % Weight of each particles
+history_size = 500; % Number of positions in the trails
+
+% Constants for integration
+t = 0;
+tEnd = 518400;
+dt = 4;
+softening = 0.1;
+num_iters = ceil((tEnd - t) / dt);
 
 % Give each body 50 pounds of weight
-masses = ones(N, 1) * 50;
+masses = ones(N, 1) * m;
 
 % Generate random positions and velocities
 bodies = rand(N, 9) * 2 - 1;
@@ -13,7 +22,6 @@ bodies(:, 7:9) = 0;
 
 % To show the path of particles in the graph, we keep a brief history of
 % the positions for each particle
-history_size = 1000;
 bodies_history = zeros(history_size, N, 3);
 
 % vel = vel - mean((mass*[1 1 1]) .* vel) / mean(mass);
@@ -23,26 +31,20 @@ bodies(:, 4:6) = bodies(:, 4:6) - mean((masses*[1 1 1]) .* bodies(:, 4:6)) / mea
 % We scale the velocity down so that the bodies stay in the screen
 bodies(:, 4:6) = bodies(:, 4:6) * 2e-5;
 
-% Constants for integration
-t = 0;
-tEnd = 518400;
-dt = 4;
-softening = 0.1;
-num_iters = ceil((tEnd - t) / dt);
-
 % The solver being used
 solver = @(bodies, masses, dt, softening) step_lf(bodies, masses, dt, softening);
 
 % Create one plot for each body in the graph
 h = [];
 for i = 1:N
-    h = [h plot3(0, 0, 0, "-")];
+    h = [h plot3(0, 0, 0, ".-", 'MarkerSize', 10, 'MarkerIndices', 1)];
     hold on
 end
 % h = plot3(bodies(:, 1), bodies(:, 2), bodies(:, 3), "o");
 axis([-1 1 -1 1 -1 1]);
 grid on
 colormap(autumn(5));
+hold off;
 
 bodies = get_accel(bodies, masses, softening); % Initial acceleration
 bodies(:, 4:6) = bodies(:, 4:6) + bodies(:, 7:9) * dt / 2; % Initial velocity step
