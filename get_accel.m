@@ -18,7 +18,7 @@ for i = 1:N
             % Add the force of gravity from body j
             r = bodies(j, 1:3) - bodies(i, 1:3);
             a(i, :) = a(i, :) + ...
-                (masses(j) * r) / (norm(r, 2).^2 + soft_pow).^(3/2);
+                (masses(j) * r) / (sum(r.^2) + soft_pow).^(3/2);
         end
     end
 end

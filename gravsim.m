@@ -1,5 +1,8 @@
 format long
 
+% For testing, it is convenient to use the same seed everytime
+rng(42);
+
 % Our random generation scheme is inspired by this Author:
 % https://github.com/pmocz/nbody-matlab/blob/master/nbody.m
 N = 20; % Number of bodies generated
