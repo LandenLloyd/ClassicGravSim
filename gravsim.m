@@ -24,9 +24,9 @@ bodies(:, 7:9) = 0;
 % the positions for each particle
 bodies_history = zeros(history_size, N, 3);
 
-% vel = vel - mean((mass*[1 1 1]) .* vel) / mean(mass);
 % Convert the frame to "center of mass", meaning the net momentum resets
 % to zero. This prevents the system from leaving the bounds of the graph.
+% Refer to https://github.com/pmocz/nbody-matlab
 bodies(:, 4:6) = bodies(:, 4:6) - mean((masses*[1 1 1]) .* bodies(:, 4:6)) / mean(masses);
 % We scale the velocity down so that the bodies stay in the screen
 bodies(:, 4:6) = bodies(:, 4:6) * 2e-5;
