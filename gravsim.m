@@ -13,7 +13,7 @@ bodies(:, 7:9) = 0;
 
 % To show the path of particles in the graph, we keep a brief history of
 % the positions for each particle
-history_size = 500;
+history_size = 1000;
 bodies_history = zeros(history_size, N, 3);
 
 % vel = vel - mean((mass*[1 1 1]) .* vel) / mean(mass);
@@ -36,7 +36,7 @@ solver = @(bodies, masses, dt, softening) step_lf(bodies, masses, dt, softening)
 % Create one plot for each body in the graph
 h = [];
 for i = 1:N
-    h = [h plot3(bodies(i, 1), bodies(i, 2), bodies(i, 3), "-")];
+    h = [h plot3(0, 0, 0, "-")];
     hold on
 end
 % h = plot3(bodies(:, 1), bodies(:, 2), bodies(:, 3), "o");
@@ -47,16 +47,16 @@ colormap(autumn(5));
 bodies = get_accel(bodies, masses, softening); % Initial acceleration
 bodies(:, 4:6) = bodies(:, 4:6) + bodies(:, 7:9) * dt / 2; % Initial velocity step
 for i = 1:num_iters
-    bodies = solver(bodies, masses, dt ,softening);
+    bodies = solver(bodies, masses, dt, softening);
     t = t + dt;
+
+    % Save the current position in the history
+    % Shift all entries up one
+    bodies_history(2:history_size, :, :) = bodies_history(1:history_size-1, :, :);
+    bodies_history(1, :, :) = bodies(:, 1:3);
 
     % We do not start plotting until we have sufficient data to plot trails
     if i >= history_size
-        % Save the current position in the history
-        % Shift all entries up one
-        bodies_history(2:history_size, :, :) = bodies_history(1:history_size-1, :, :);
-        bodies_history(1, :, :) = bodies(:, 1:3);
-    
         % Plot the motion of the planets
         for j = 1:N
             set(h(j), 'XData', bodies_history(:, j, 1));
