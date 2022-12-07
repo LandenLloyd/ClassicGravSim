@@ -1,4 +1,4 @@
-function [ke, pe, me] = get_me(bodies, masses)
+function [ke, pe, me] = get_me(bodies, masses, softening)
 %GET_ME Gets the total mechanical energy of the system at the current
 %timestep.
 %   bodies: an N x 9 matrix, where each row holds the position, velocity,
@@ -19,7 +19,7 @@ for i = 1:N
     for j = 1:N
         if j ~= i
             pe = pe - (G * masses(i) * masses(j)) / ...
-                norm(bodies(j, 1:3) - bodies(i, 1:3));
+                sqrt(sum((bodies(j, 1:3) - bodies(i, 1:3)).^2) + softening^2);
         end
     end
 end

@@ -54,13 +54,16 @@ end
 axis([-1 1 -1 1 -1 1]);
 grid on
 colormap(autumn(5));
+xlabel("X-position (meters)");
+ylabel("Y-position (meters)");
+zlabel("Z-position (meters)");
 hold off;
 
 % Keep a history of the mechanical energy
 nexttile
 e_hist_t = [t];
 
-[ke, pe, me] = get_me(bodies, masses);
+[ke, pe, me] = get_me(bodies, masses, softening);
 ke_hist = [ke];
 pe_hist = [pe];
 me_hist = [me];
@@ -70,6 +73,8 @@ hold on
 pe_h = plot(e_hist_t, pe_hist, '-');
 me_h = plot(e_hist_t, me_hist, '-');
 legend("KE", "PE", "ME");
+xlabel("Time (seconds)")
+ylabel("Energy (joules)")
 hold off
 
 bodies = get_accel(bodies, masses, softening); % Initial acceleration
@@ -86,7 +91,7 @@ for i = 1:num_iters
     % Save the current ME
     e_hist_t = [e_hist_t t];
     
-    [ke, pe, me] = get_me(bodies, masses);
+    [ke, pe, me] = get_me(bodies, masses, softening);
     ke_hist = [ke_hist ke];
     pe_hist = [pe_hist pe];
     me_hist = [me_hist me];
