@@ -37,7 +37,11 @@ bodies(:, 4:6) = bodies(:, 4:6) * 2e-5;
 % The solver being used
 solver = @(bodies, masses, dt, softening) step_lf(bodies, masses, dt, softening);
 
-tiledlayout(1, 2);
+% Create a larger window for multiple graphs
+f = figure();
+f.Position = f.Position * 2;
+
+tiledlayout(2, 2);
 
 % Create one plot for each body in the graph
 nexttile
@@ -54,9 +58,19 @@ hold off;
 
 % Keep a history of the mechanical energy
 nexttile
-me_hist_t = [t];
-me_hist = [get_me(bodies, masses)];
-me_h = plot(me_hist_t, me_hist, '-');
+e_hist_t = [t];
+
+[ke, pe, me] = get_me(bodies, masses);
+ke_hist = [ke];
+pe_hist = [pe];
+me_hist = [me];
+
+ke_h = plot(e_hist_t, ke_hist, '-');
+hold on
+pe_h = plot(e_hist_t, pe_hist, '-');
+me_h = plot(e_hist_t, me_hist, '-');
+legend("KE", "PE", "ME");
+hold off
 
 bodies = get_accel(bodies, masses, softening); % Initial acceleration
 bodies(:, 4:6) = bodies(:, 4:6) + bodies(:, 7:9) * dt / 2; % Initial velocity step
@@ -70,9 +84,18 @@ for i = 1:num_iters
     bodies_history(1, :, :) = bodies(:, 1:3);
 
     % Save the current ME
-    me_hist_t = [me_hist_t t];
-    me_hist = [me_hist get_me(bodies, masses)];
-    set(me_h, 'XData', me_hist_t);
+    e_hist_t = [e_hist_t t];
+    
+    [ke, pe, me] = get_me(bodies, masses);
+    ke_hist = [ke_hist ke];
+    pe_hist = [pe_hist pe];
+    me_hist = [me_hist me];
+
+    set(ke_h, 'XData', e_hist_t);
+    set(ke_h, 'YData', ke_hist);
+    set(pe_h, 'XData', e_hist_t);
+    set(pe_h, 'YData', pe_hist);
+    set(me_h, 'XData', e_hist_t);
     set(me_h, 'YData', me_hist);
 
     % We do not start plotting until we have sufficient data to plot trails

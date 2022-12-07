@@ -4,7 +4,7 @@ function [bodies] = step_lf(bodies, masses, dt, softening)
 %to be used as part of rk4.
 %   bodies: an N x 9 matrix, where each row holds the position, velocity,
 %   and acceleration for that body
-%   masses: a 1 x N matrix, where each row holds the mass for that body
+%   masses: an N x 1 matrix, where each row holds the mass for that body
 %   dt: the fixed timestep
 %   softening: the distance below which gravity is supressed
 
