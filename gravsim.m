@@ -16,7 +16,7 @@ dt = 4;
 softening = 0.06;
 num_iters = ceil((tEnd - t) / dt);
 
-% Give each body 50 pounds of weight
+% Give each body m kilograms of mass
 masses = ones(N, 1) * m;
 
 % Generate random positions and velocities
@@ -30,7 +30,7 @@ bodies_history = zeros(history_size, N, 3);
 % Convert the frame to "center of mass", meaning the net momentum resets
 % to zero. This prevents the system from leaving the bounds of the graph.
 % Refer to https://github.com/pmocz/nbody-matlab
-bodies(:, 4:6) = bodies(:, 4:6) - mean((masses*[1 1 1]) .* bodies(:, 4:6)) / mean(masses);
+bodies(:, 4:6) = bodies(:, 4:6) - sum((masses*[1 1 1]) .* bodies(:, 4:6)) / sum(masses);
 % We scale the velocity down so that the bodies stay in the screen
 bodies(:, 4:6) = bodies(:, 4:6) * 2e-5;
 
@@ -73,9 +73,19 @@ hold on
 pe_h = plot(e_hist_t, pe_hist, '-');
 me_h = plot(e_hist_t, me_hist, '-');
 legend("KE", "PE", "ME");
-xlabel("Time (seconds)")
-ylabel("Energy (joules)")
+xlabel("Time (seconds)");
+ylabel("Energy (joules)");
+title("Mechanical energy over time");
 hold off
+
+% Track the motion of the center of mass as well
+nexttile
+cm_prev = get_cm(bodies, masses);
+cm_hist = [0];
+cm_h = plot(e_hist_t, cm_hist, '-');
+xlabel("Time (seconds)");
+ylabel("Velocity (meters/second)");
+title("Velocity of the center of mass over time");
 
 bodies = get_accel(bodies, masses, softening); % Initial acceleration
 bodies(:, 4:6) = bodies(:, 4:6) + bodies(:, 7:9) * dt / 2; % Initial velocity step
@@ -102,6 +112,13 @@ for i = 1:num_iters
     set(pe_h, 'YData', pe_hist);
     set(me_h, 'XData', e_hist_t);
     set(me_h, 'YData', me_hist);
+
+    % Set the current COM
+    cm = get_cm(bodies, masses);
+    cm_diff = norm(cm - cm_prev);
+    cm_hist = [cm_hist cm_diff];
+    set(cm_h, 'XData', e_hist_t);
+    set(cm_h, 'YData', cm_hist);
 
     % We do not start plotting until we have sufficient data to plot trails
     if i >= history_size
