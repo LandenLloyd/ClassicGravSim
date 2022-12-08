@@ -3,12 +3,12 @@
 ![Simulation screenshot](Figure1.png "Classical Gravitation Simulation")
 
 Using Newton’s law of universal gravitation, the acceleration of bodies under mutual gravitational
-attraction can be expressed exactly. Then, given a set of initial conditions, finding
-the position of bodies under the force of gravity is a second order differential equation. While the
-differential equation is simple enough to solve analytically for 2 bodies, it is difficult to solve analytically
-for a large number of bodies, so a numerical integrator is used instead. This report presents a
-MATLAB implementation of the symplectic ”leapfrog integrator” for simulating the
-gravitational attraction between many bodies.
+attraction can be expressed exactly. Then, given a set of initial conditions, finding the
+position of bodies under the force of gravity is a system of second-order differential equations. While
+this system is simple enough to solve analytically for 2 bodies, it is difficult to solve analytically for
+a large number of bodies, so a numerical integrator is used instead. This repostiory presents a
+MATLAB implementation 1 of the symplectic ”leapfrog integrator” for simulating
+the gravitational attraction between many bodies.
 
 [gravsim.m](gravsim.m) is the "main" script; at the top you can edit the number of bodies, the mass of each body, and the length of each trail. The simulation performs okay up to 100 bodies, but it is not designed to work with many more.
 
